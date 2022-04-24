@@ -186,6 +186,7 @@ function BookingTable({
           return { ...item, key: index };
         })}
         columns={columns}
+        pagination={false}
       />
 
       <ApprovedForm

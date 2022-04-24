@@ -6,7 +6,6 @@ import { RootState } from "../../app/store";
 export const fetchEventType = createAsyncThunk(
   "eventTypes/fetchEventType",
   async () => {
-    console.log("fetch event types");
     const response = await axios.get(`http://localhost:4000/api/event-types`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user_token")}`,

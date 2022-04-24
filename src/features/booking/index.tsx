@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BookingTable from "./booking-table";
-import { Alert, Button, Input, message, notification } from "antd";
+import { Alert, Button, Input, message, notification, Pagination } from "antd";
 import CreateBookingForm from "./create-booking-form";
 import { PlusOutlined } from "@ant-design/icons";
 import { BookingStatus, CreateBookingFields } from "./interface";
@@ -18,10 +18,11 @@ function BookingPage() {
 
   const [tableData, setTableData] = useState([]);
   const [filterTable, setFilterTable] = useState<any>({});
+  const [totalPage, setTotalPage] = useState<number>(0);
 
   const [triggerReload, setTriggerReload] = useState<number>(0);
 
-  const eventTypeOptions: EventTypeFields[] = useAppSelector(eventTypeList);
+  const eventTypeOptions: EventTypeFields[] = useAppSelector(eventTypeList); //fetch using from redux store
 
   const handleCreateNewBooking = (bookingData: CreateBookingFields) => {
     setIsShowCreateForm(false);
@@ -72,7 +73,8 @@ function BookingPage() {
     axios
       .post("http://localhost:4000/api/bookings/booking-list", filterTable)
       .then((res: any) => {
-        setTableData(res.data);
+        setTableData(res.data.bookings);
+        setTotalPage(res.data.total);
       })
       .catch(() => {});
   }, [filterTable, triggerReload]);
@@ -200,6 +202,21 @@ function BookingPage() {
         bookingData={tableData}
         setEditStatus={handleEditStatus}
       />
+      <div className="flex justify-end">
+        <Pagination
+          total={totalPage}
+          showTotal={(total) => `Total ${total} bookings`}
+          defaultPageSize={10}
+          defaultCurrent={1}
+          onChange={(page, pageSize) => {
+            const limit = pageSize;
+            const offset = (page - 1) * pageSize;
+
+            setFilterTable({ ...filterTable, limit: limit, offset: offset });
+          }}
+          showSizeChanger
+        />
+      </div>
 
       <CreateBookingForm
         isShow={isShowCreateForm}
