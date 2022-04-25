@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Account for testing
 #### 2 Company (User) accounts
-username: user-hr-1 / password: 123
+username: user-hr-1 / password: 123 <br />
 username: user-hr-2 / password: 123
 
 #### 1 Admin account
