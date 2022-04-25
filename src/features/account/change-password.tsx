@@ -4,35 +4,41 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ERROR_DUPLICATED_USERNAME_CREATE } from "../../constant";
 import { omit } from "../utils";
+import Cookies from "universal-cookie";
 
 export function ChangePasswordPage() {
+  const cookies = new Cookies();
+
   let navigate = useNavigate();
 
   const onFinish = (values: any) => {
     let submitedValues = omit(values, "retype-password");
     submitedValues = {
       ...submitedValues,
-      id: localStorage.getItem("user_id"),
+      id: localStorage.getItem("fullerton_user_id"),
     };
     axios
       .post("http://localhost:4000/api/auth/change-password", submitedValues, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
         },
       })
       .then((res) => {
-        console.log("res", res);
         if (res.data) {
           message.success("Change password successfully");
-
           navigate("/log-in");
+          window.location.reload();
         }
       })
       .catch((error) => {
+        console.log("error.response.data", error.response.data);
         if (
+          error.response.data.message &&
           error.response.data.message.includes(ERROR_DUPLICATED_USERNAME_CREATE)
         ) {
           message.error("Duplicated username");
+        } else if (!error.response.data.data.passwordChanged) {
+          message.error(error.response.data.data.status);
         } else {
           message.error("Error request");
         }

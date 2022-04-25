@@ -1,21 +1,22 @@
 import React, { useEffect } from "react";
 
 import { Menu } from "antd";
-import { MailOutlined, UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 function NavigationHeader() {
+  const cookies = new Cookies();
+
   let navigate = useNavigate();
 
   useEffect(() => {
     if (
-      !localStorage.getItem("user_id") &&
+      !localStorage.getItem("fullerton_user_id") &&
       window.location.pathname !== "/create-account"
     ) {
       navigate("/log-in");
-    } else {
-      navigate("/");
     }
   }, []);
 
@@ -26,8 +27,8 @@ function NavigationHeader() {
         title={
           <div className="flex items-center space-x-2">
             <UserOutlined />
-            <div>{localStorage.getItem("user_name")} </div>
-            <div>({localStorage.getItem("user_role") || "user"})</div>
+            <div>{localStorage.getItem("fullerton_user_name")} </div>
+            <div>({localStorage.getItem("fullerton_user_role") || "user"})</div>
           </div>
         }
       >
@@ -48,14 +49,19 @@ function NavigationHeader() {
           onClick={() => {
             axios.get(`http://localhost:4000/api/auth/logout/`, {
               headers: {
-                Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+                Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
               },
             });
+            cookies.set("fullerton_user_token", "", {
+              path: "/",
+              sameSite: "strict",
+              maxAge: 600000, // 7 days
+            });
+            localStorage.removeItem("fullerton_user_id");
+            localStorage.removeItem("fullerton_user_name");
+            localStorage.removeItem("fullerton_user_role");
             navigate("/log-in");
-            localStorage.removeItem("user_token");
-            localStorage.removeItem("user_id");
-            localStorage.removeItem("user_name");
-            localStorage.removeItem("user_role");
+            window.location.reload();
           }}
         >
           Log-out

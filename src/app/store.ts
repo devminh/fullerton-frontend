@@ -1,10 +1,8 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
 import eventTypeReducer from "../features/event-type/eventTypeSlice";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     eventTypeReducer: eventTypeReducer,
   },
 });

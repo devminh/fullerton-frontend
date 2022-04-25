@@ -13,8 +13,9 @@ import { fetchEventType } from "./features/event-type/eventTypeSlice";
 function App() {
   const dispatch = useAppDispatch();
 
-  if (localStorage.getItem("user_id")) {
+  if (localStorage.getItem("fullerton_user_id")) {
     dispatch(fetchEventType()); //fetch eventType and stored
+    console.log("fetch at app.tsx");
   }
 
   return (

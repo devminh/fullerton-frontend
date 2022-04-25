@@ -2,6 +2,7 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import { Button, Input, message, Popconfirm, Tooltip } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Cookies from "universal-cookie";
 import { useAppDispatch } from "../../app/hooks";
 import { fetchEventType } from "./eventTypeSlice";
 
@@ -13,6 +14,8 @@ export interface EventTypeFields {
 }
 
 function EventTypePage() {
+  const cookies = new Cookies();
+
   const [eventTypeList, setEventTypeList] = useState<EventTypeFields[]>([]);
   const [triggerReload, setTriggerReload] = useState<number>(0);
 
@@ -25,7 +28,7 @@ function EventTypePage() {
     axios
       .post("http://localhost:4000/api/event-types", eventType, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
         },
       })
       .then((res: any) => {
@@ -47,7 +50,7 @@ function EventTypePage() {
     axios
       .put("http://localhost:4000/api/event-types", eventType, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
         },
       })
       .then((res: any) => {
@@ -65,7 +68,7 @@ function EventTypePage() {
     axios
       .delete(`http://localhost:4000/api/event-types/?id=${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
         },
       })
       .then((res: any) => {
@@ -84,7 +87,7 @@ function EventTypePage() {
     axios
       .get(`http://localhost:4000/api/event-types`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
         },
       })
       .then((res) => {
@@ -175,7 +178,6 @@ function EventTypePage() {
           }
         />
         <Button
-          type="dashed"
           onClick={() => {
             handleCreateEventType({ label: newLabel, value: newValue });
           }}

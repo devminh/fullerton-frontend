@@ -2,13 +2,16 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../../app/store";
 
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+
 // First, create the thunk
 export const fetchEventType = createAsyncThunk(
   "eventTypes/fetchEventType",
   async () => {
     const response = await axios.get(`http://localhost:4000/api/event-types`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
       },
     });
     return response.data;

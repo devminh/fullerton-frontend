@@ -11,24 +11,27 @@ import { EventTypeFields } from "../event-type";
 import SelectField from "../../components/select-field";
 import { STATUS_BOOKING_SELECT } from "../../constant";
 import { debounce, omit } from "lodash";
+import Cookies from "universal-cookie";
 
 function BookingPage() {
+  const cookies = new Cookies();
+
+  //React hooks for create booking form
+  const eventTypeOptions: EventTypeFields[] = useAppSelector(eventTypeList); //fetch using from redux store
   const [accountRole, setAccountRole] = useState<string>("");
   const [isShowCreateForm, setIsShowCreateForm] = useState<boolean>(false);
 
+  //React hooks for table booking form
   const [tableData, setTableData] = useState([]);
   const [filterTable, setFilterTable] = useState<any>({});
   const [totalPage, setTotalPage] = useState<number>(0);
-
   const [triggerReload, setTriggerReload] = useState<number>(0);
-
-  const eventTypeOptions: EventTypeFields[] = useAppSelector(eventTypeList); //fetch using from redux store
 
   const handleCreateNewBooking = (bookingData: CreateBookingFields) => {
     setIsShowCreateForm(false);
     const dataPost = {
-      user_id: localStorage.getItem("user_id"),
-      user_name: localStorage.getItem("user_name"),
+      user_id: localStorage.getItem("fullerton_user_id"),
+      user_name: localStorage.getItem("fullerton_user_name"),
       status: BookingStatus.PENDING,
       ...bookingData,
       event_type: eventTypeOptions.find(
@@ -36,7 +39,11 @@ function BookingPage() {
       )?.label,
     };
     axios
-      .post("http://localhost:4000/api/bookings", dataPost)
+      .post("http://localhost:4000/api/bookings", dataPost, {
+        headers: {
+          Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
+        },
+      })
       .then((res: any) => {
         if (res.data.id) {
           notification.open({
@@ -51,7 +58,9 @@ function BookingPage() {
           setTriggerReload(triggerReload + 1);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        message.error("Fail to create a new booking");
+      });
   };
 
   const handleEditStatus = (editStatus: {
@@ -59,19 +68,29 @@ function BookingPage() {
     status: BookingStatus;
   }) => {
     axios
-      .put("http://localhost:4000/api/bookings/", editStatus)
+      .put("http://localhost:4000/api/bookings/", editStatus, {
+        headers: {
+          Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
+        },
+      })
       .then((res: any) => {
         if (res.data) {
           message.success(`This booking is ${editStatus.status} `);
           setTriggerReload(triggerReload + 1);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        message.error("Fail to change booking status");
+      });
   };
 
   useEffect(() => {
     axios
-      .post("http://localhost:4000/api/bookings/booking-list", filterTable)
+      .post("http://localhost:4000/api/bookings/booking-list", filterTable, {
+        headers: {
+          Authorization: `Bearer ${cookies.get("fullerton_user_token")}`,
+        },
+      })
       .then((res: any) => {
         setTableData(res.data.bookings);
         setTotalPage(res.data.total);
@@ -80,13 +99,13 @@ function BookingPage() {
   }, [filterTable, triggerReload]);
 
   useEffect(() => {
-    if (localStorage.getItem("user_role")) {
-      setAccountRole(localStorage.getItem("user_role") || "user");
+    if (localStorage.getItem("fullerton_user_role")) {
+      setAccountRole(localStorage.getItem("fullerton_user_role") || "user");
     }
 
-    if (localStorage.getItem("user_role") === "user") {
+    if (localStorage.getItem("fullerton_user_role") === "user") {
       setFilterTable({
-        user_id: localStorage.getItem("user_id"),
+        user_id: localStorage.getItem("fullerton_user_id"),
       });
     }
   }, []);

@@ -2,9 +2,11 @@ import React from "react";
 import { Col, Row, Form, Input, Button, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Cookies from "universal-cookie";
 
 export function LoginPage() {
   let navigate = useNavigate();
+  const cookies = new Cookies();
 
   const onFinish = (values: any) => {
     axios
@@ -12,11 +14,16 @@ export function LoginPage() {
       .then((res) => {
         const data = res.data;
         if (data.error === false) {
+          cookies.set("fullerton_user_token", data.data.token, {
+            path: "/",
+            sameSite: "strict",
+            maxAge: 600000, // 7 days
+          });
+
+          localStorage.setItem("fullerton_user_id", data.data.user._id);
+          localStorage.setItem("fullerton_user_name", data.data.user.user_name);
+          localStorage.setItem("fullerton_user_role", data.data.user.user_role);
           navigate("/");
-          localStorage.setItem("user_token", data.data.token);
-          localStorage.setItem("user_id", data.data.user._id);
-          localStorage.setItem("user_name", data.data.user.user_name);
-          localStorage.setItem("user_role", data.data.user.user_role);
           window.location.reload();
         }
       })
@@ -46,6 +53,7 @@ export function LoginPage() {
             wrapperCol={{ span: 16 }}
             onFinish={onFinish}
             autoComplete="off"
+            style={{ marginLeft: "16px", marginRight: "16px" }}
           >
             <Form.Item
               label="Username"
