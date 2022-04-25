@@ -1,5 +1,13 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
+## Account for testing
+#### 2 Company (User) accounts
+username: user-hr-1 / password: 123
+username: user-hr-2 / password: 123
+
+#### 1 Admin account
+username: admin-1 / password: 123
+
 ## Available Scripts
 
 In the project directory, you can run:
