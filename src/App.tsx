@@ -17,6 +17,7 @@ function App() {
     dispatch(fetchEventType()); //fetch eventType and stored
     console.log("fetch at app.tsx");
   }
+  document.title = "Fullerton application";
 
   return (
     <BrowserRouter>

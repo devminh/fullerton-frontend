@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "universal-cookie";
 
+import FullertonImg from "../../logo-fullerton-health-small.png";
+
 export function LoginPage() {
   let navigate = useNavigate();
   const cookies = new Cookies();
@@ -39,8 +41,8 @@ export function LoginPage() {
       <Col md={12}>
         <div className="flex items-center justify-center h-full">
           <img
-            src="https://www.fullertonhealth.com/wp-content/uploads/2021/06/logo-fullerton-health-small.png"
-            alt=""
+            src={FullertonImg}
+            alt="fullerton-img"
             style={{ width: "60%" }}
           />
         </div>
