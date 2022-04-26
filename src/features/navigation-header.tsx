@@ -13,10 +13,11 @@ function NavigationHeader() {
 
   useEffect(() => {
     if (
-      !localStorage.getItem("fullerton_user_id") &&
+      !cookies.get("fullerton_user_token") &&
       window.location.pathname !== "/create-account"
     ) {
       navigate("/log-in");
+      window.location.reload();
     }
   }, []);
 

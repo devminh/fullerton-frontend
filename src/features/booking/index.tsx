@@ -128,7 +128,6 @@ function BookingPage() {
           ""
         )}
       </div>
-
       <div className="flex flex-wrap space-x-2 space-y-2">
         <div></div>
         {accountRole === "admin" && (
@@ -138,18 +137,18 @@ function BookingPage() {
               placeholder="username"
               defaultValue={""}
               onChange={(e) => {
-                if (e.target.value) {
-                  const debounced = debounce(function () {
+                const debounced = debounce(function (val) {
+                  if (val) {
                     setFilterTable({
                       ...filterTable,
-                      user_name: e.target.value,
+                      user_name: val,
                     });
-                  }, 1000);
-                  debounced();
-                } else {
-                  const tempFilterTable = omit(filterTable, ["user_name"]);
-                  setFilterTable(tempFilterTable);
-                }
+                  } else {
+                    const tempFilterTable = omit(filterTable, ["user_name"]);
+                    setFilterTable(tempFilterTable);
+                  }
+                }, 1000);
+                debounced(e.target.value);
               }}
             />
           </div>
@@ -181,18 +180,18 @@ function BookingPage() {
             placeholder="Location of event"
             defaultValue={""}
             onChange={(e) => {
-              if (e.target.value) {
-                const debounced = debounce(function () {
+              const debounced = debounce(function (val) {
+                if (val) {
                   setFilterTable({
                     ...filterTable,
                     event_location: e.target.value,
                   });
-                }, 1000);
-                debounced();
-              } else {
-                const tempFilterTable = omit(filterTable, ["event_location"]);
-                setFilterTable(tempFilterTable);
-              }
+                } else {
+                  const tempFilterTable = omit(filterTable, ["event_location"]);
+                  setFilterTable(tempFilterTable);
+                }
+              }, 1000);
+              debounced(e.target.value);
             }}
           />
         </div>
